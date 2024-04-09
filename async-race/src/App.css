@@ -59,3 +59,16 @@
     color: white;
   }
 }
+
+/* form color */
+.form {
+  display: flex;
+  gap: 20px;
+  max-width: 90%;
+  margin: 20px auto;
+}
+
+.form-color {
+  height: 50px;
+  width: 100px;
+}
