@@ -27,6 +27,16 @@ const HomePage = () => {
       });
   };
 
+  const addCar = (obj: { name: string; color: string }) => {
+    fetch("http://localhost:3000/garage", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(obj),
+    })
+      .then<CarInterface>((response) => response.json())
+      .then(() => {});
+  };
+
   useEffect(() => {
     getCars();
   }, []);
@@ -34,8 +44,13 @@ const HomePage = () => {
   console.log(carsData);
   return (
     <div>
-      <ColorForm actionText="Create" placeholderText="Car name" />
-      <ColorForm actionText="Change" placeholderText="Change Car" />
+      <ColorForm
+        actionText="Create Car"
+        placeholderText="Car name (like: tesla )"
+        addCar={addCar}
+      />
+      <p>Garage is {carsData?.length} car</p>
+
       <SingleCar carsData={carsData} />
     </div>
   );
