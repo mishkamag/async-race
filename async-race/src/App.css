@@ -86,21 +86,21 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
 }
 .car-component__image-block {
   padding: 5px;
-  padding-bottom: 0px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 5px dotted #282c34;
-  width: 100%;
-  box-sizing: border-box;
+  background-image: url("./assets/1.png");
+  background-size: auto 90px;
 }
-.image-block__flag {
-  margin-right: 100px;
+
+.car-container {
+  max-width: 90%;
+  margin-inline: auto;
 }
+
 .create-block {
   display: flex;
   gap: 10px;
@@ -116,4 +116,19 @@
   margin-top: 20px;
   align-items: center;
   width: 350px;
+}
+
+.btns-block {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  max-width: 90%;
+  margin-inline: auto;
+  align-items: center;
+}
+
+.garage-text {
+  color: red;
+  font-weight: 900;
+  font-size: 2rem;
 }

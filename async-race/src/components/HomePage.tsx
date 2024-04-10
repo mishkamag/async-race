@@ -49,7 +49,13 @@ const HomePage = () => {
         placeholderText="Car name (like: tesla )"
         addCar={addCar}
       />
-      <p>Garage is {carsData?.length} car</p>
+
+      <div className="btns-block">
+        <p className="garage-text">Cars in garage: {carsData?.length}</p>
+        <button className="app-button">Start race</button>
+        <button className="app-button">Reset</button>
+        <button className="app-button">Create 100 cars</button>
+      </div>
 
       <SingleCar carsData={carsData} />
     </div>
