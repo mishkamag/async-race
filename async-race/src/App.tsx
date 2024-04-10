@@ -2,8 +2,10 @@ import "./App.css";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import HomePage from "./components/HomePage";
 import WinnerPage from "./components/WinnerPage";
+import { useState } from "react";
 
 const App = () => {
+  const [pageNumber, setPageNumber] = useState<number>(1);
   const navigate = useNavigate();
   return (
     <>
@@ -22,7 +24,12 @@ const App = () => {
       </header>
 
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route
+          path="/"
+          element={
+            <HomePage pageNumber={pageNumber} setPageNumber={setPageNumber} />
+          }
+        />
         <Route path="/winners" element={<WinnerPage />} />
       </Routes>
     </>
