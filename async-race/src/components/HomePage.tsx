@@ -10,14 +10,6 @@ const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
   const [totalCars, setTotalCars] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(1);
 
-  const changePage = (bool: boolean) => {
-    if (bool && totalPages > pageNumber) {
-      setPageNumber((pageNumber += 1));
-    }
-    if (!bool && pageNumber !== 1) {
-      setPageNumber((pageNumber -= 1));
-    }
-  };
   //get all cars
   const getCars = (page: number) => {
     fetch(`http://localhost:3000/garage?_page=${page}&_limit=7`)
@@ -55,6 +47,17 @@ const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
       .then(() => {});
   };
 
+  //delete car
+  const deleteCar = (id: number) => {
+    fetch(`http://localhost:3000/garage/${id}`, { method: "DELETE" }).then(
+      (response) => {
+        if (response.status === 200) {
+          getCars(pageNumber);
+        }
+      }
+    );
+  };
+
   //create 100 cars random
   const create100Cars = () => {
     for (let i = 0; i < 100; i++) {
@@ -68,12 +71,21 @@ const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
     }
   };
 
+  //pagination
+  const changePage = (bool: boolean) => {
+    if (bool && totalPages > pageNumber) {
+      setPageNumber((pageNumber += 1));
+    }
+    if (!bool && pageNumber !== 1) {
+      setPageNumber((pageNumber -= 1));
+    }
+  };
+
   useEffect(() => {
     getCars(pageNumber);
     // eslint-disable-next-line
   }, [pageNumber]);
 
-  console.log(carsData);
   return (
     <div>
       <ColorForm
@@ -81,6 +93,8 @@ const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
         placeholderText="Car name (like: tesla )"
         addCar={addCar}
       />
+
+      <ColorForm actionText="Change Car" placeholderText="Change Car" />
 
       <div className="btns-block">
         <p className="garage-text">Cars in garage: {totalCars}</p>
@@ -91,7 +105,7 @@ const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
         </button>
       </div>
 
-      <SingleCar carsData={carsData} />
+      <SingleCar carsData={carsData} deleteCar={deleteCar} />
 
       <Page
         pageNumber={pageNumber}

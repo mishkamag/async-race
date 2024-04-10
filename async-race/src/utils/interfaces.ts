@@ -6,6 +6,7 @@ export interface CarInterface {
 
 export interface SingleCarInterface {
   carsData: CarInterface[];
+  deleteCar: (id: number) => void;
 }
 
 export interface HomePageInterface {
