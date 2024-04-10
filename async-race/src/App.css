@@ -72,3 +72,48 @@
   height: 50px;
   width: 100px;
 }
+
+.car {
+  width: 100px;
+  transform: rotateY(180deg);
+  fill: #61dafb;
+  margin-bottom: -5px;
+  position: relative;
+}
+.car-component {
+  width: 100%;
+  padding: 5px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.car-component__image-block {
+  padding: 5px;
+  padding-bottom: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 5px dotted #282c34;
+  width: 100%;
+  box-sizing: border-box;
+}
+.image-block__flag {
+  margin-right: 100px;
+}
+.create-block {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+}
+.create-block__error {
+  color: red;
+}
+.page-block {
+  display: flex;
+  gap: 10px;
+  margin: 0 auto;
+  margin-top: 20px;
+  align-items: center;
+  width: 350px;
+}
