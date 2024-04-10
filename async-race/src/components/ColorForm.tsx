@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 import "../App.css";
-
-type ColorFormProps = {
-  actionText: string;
-  placeholderText: string;
-  addCar?: (obj: { name: string; color: string }) => void;
-};
+import { ColorFormProps } from "../utils/types";
 
 const ColorForm: React.FC<ColorFormProps> = ({
   actionText,

@@ -1,12 +1,8 @@
 import CarImage from "./CarImage";
 import "../App.css";
-import { CarInterface } from "./HomePage";
+import { SingleCarInterface } from "../utils/interfaces";
 
-interface Props {
-  carsData: CarInterface[];
-}
-
-const SingleCar = ({ carsData }: Props) => {
+const SingleCar = ({ carsData }: SingleCarInterface) => {
   return (
     <>
       <div className="car-container">

@@ -1,8 +1,5 @@
 import "../App.css";
-
-type CarImageProps = {
-  color: string | undefined;
-};
+import { CarImageProps } from "../utils/types";
 
 const CarImage = ({ color }: CarImageProps) => {
   return (

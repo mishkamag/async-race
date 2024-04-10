@@ -1,35 +1,16 @@
+import { CarInterface, HomePageInterface } from "../utils/interfaces";
+import { carNames } from "../utils/utils";
 import ColorForm from "./ColorForm";
 import Page from "./Page";
 import SingleCar from "./SingleCar";
 import { useEffect, useState } from "react";
 
-export interface CarInterface {
-  name: string;
-  id: number;
-  color: string;
-}
-
-interface IProps {
-  setPageNumber: React.Dispatch<React.SetStateAction<number>>;
-  pageNumber: number;
-}
-
-const carNames = {
-  Porshe: ["Panamera", "Cayene", "Boxter", "911"],
-  BMW: ["M3 e46", "M4", "540i", "X6"],
-  Mersedes: ["AMG G55", "GT63 AMG", "CLS"],
-  Lada: ["Priora", "Granta", "X-Ray", "2101"],
-  Volkswagen: ["Polo GT", "Scirocco", "Golf GTI", "Beetle"],
-  Hundai: ["Tiburon", "Santa Fe", "Accent", "Sonata"],
-  Lamborgini: ["Aventador", "Urus", "Huracan", "Veneno"],
-};
-
-const HomePage = ({ setPageNumber, pageNumber }: IProps) => {
+const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
   const [carsData, setCarsData] = useState<CarInterface[]>([]);
   const [totalCars, setTotalCars] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(1);
 
-  const ChangePage = (bool: boolean) => {
+  const changePage = (bool: boolean) => {
     if (bool && totalPages > pageNumber) {
       setPageNumber((pageNumber += 1));
     }
@@ -55,7 +36,7 @@ const HomePage = ({ setPageNumber, pageNumber }: IProps) => {
       })
       .then((data) => {
         if (data.length === 0) {
-          ChangePage(false);
+          changePage(false);
         }
         setCarsData(data);
       })
@@ -89,6 +70,7 @@ const HomePage = ({ setPageNumber, pageNumber }: IProps) => {
 
   useEffect(() => {
     getCars(pageNumber);
+    // eslint-disable-next-line
   }, [pageNumber]);
 
   console.log(carsData);
@@ -114,7 +96,7 @@ const HomePage = ({ setPageNumber, pageNumber }: IProps) => {
       <Page
         pageNumber={pageNumber}
         totalPages={totalPages}
-        ChangePage={ChangePage}
+        changePage={changePage}
       />
     </div>
   );
