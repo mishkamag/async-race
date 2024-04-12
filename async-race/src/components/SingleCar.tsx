@@ -2,7 +2,7 @@ import CarImage from "./CarImage";
 import "../App.css";
 import { SingleCarInterface } from "../utils/interfaces";
 
-const SingleCar = ({ carsData, deleteCar }: SingleCarInterface) => {
+const SingleCar = ({ carsData, deleteCar, changeCar }: SingleCarInterface) => {
   return (
     <>
       <div className="car-container">
@@ -19,9 +19,12 @@ const SingleCar = ({ carsData, deleteCar }: SingleCarInterface) => {
             </div>
             <p>{car.name}</p>
             <div className="btn-block">
+              <button className="app-button">Start</button>
               <button className="app-button">Drive</button>
               <button className="app-button">Stop</button>
-              <button className="app-button">Change</button>
+              <button onClick={() => changeCar(car)} className="app-button">
+                Change
+              </button>
               <button onClick={() => deleteCar(car.id)} className="app-button">
                 Delete
               </button>

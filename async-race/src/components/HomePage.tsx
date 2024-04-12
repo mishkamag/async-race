@@ -3,12 +3,18 @@ import { carNames } from "../utils/utils";
 import ColorForm from "./ColorForm";
 import Page from "./Page";
 import SingleCar from "./SingleCar";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
   const [carsData, setCarsData] = useState<CarInterface[]>([]);
   const [totalCars, setTotalCars] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [carObj, setCarObj] = useState<CarInterface>({
+    name: "",
+    color: "#FFFFFF",
+    id: -1,
+  });
+  const save = useRef(false);
 
   //get all cars
   const getCars = (page: number) => {
@@ -43,8 +49,18 @@ const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(obj),
     })
-      .then<CarInterface>((response) => response.json())
-      .then(() => {});
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to add car");
+        }
+        return response.json();
+      })
+      .then((newCar) => {
+        setCarsData((prevCarsData) => [...prevCarsData, newCar]);
+      })
+      .catch((error) => {
+        console.error("Error adding car:", error);
+      });
   };
 
   //delete car
@@ -71,6 +87,32 @@ const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
     }
   };
 
+  //change car
+  const changeCar = (obj: CarInterface) => {
+    localStorage.removeItem("changeInpLoginovskiy");
+    setCarObj(obj);
+    save.current = true;
+  };
+
+  // fetch change cars
+  const fetchChangedCar = (
+    obj: { name: string; color: string },
+    id: number | undefined
+  ) => {
+    fetch(`http://localhost:3000/garage/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(obj),
+    })
+      .then<CarInterface>((response) => response.json())
+      .then((data) => {
+        const arr = [...carsData];
+        const index = arr.findIndex((car) => car.id === data.id);
+        arr.splice(index, 1, data);
+        setCarsData(arr);
+      });
+  };
+
   //pagination
   const changePage = (bool: boolean) => {
     if (bool && totalPages > pageNumber) {
@@ -88,13 +130,15 @@ const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
 
   return (
     <div>
-      <ColorForm
-        actionText="Create Car"
-        placeholderText="Car name (like: tesla )"
-        addCar={addCar}
-      />
+      <ColorForm actionText="Create Car" propFuncCar={addCar} />
 
-      <ColorForm actionText="Change Car" placeholderText="Change Car" />
+      <ColorForm
+        actionText="Change Car"
+        carObj={carObj}
+        setCarObj={setCarObj}
+        save={save.current}
+        propFuncCar={fetchChangedCar}
+      />
 
       <div className="btns-block">
         <p className="garage-text">Cars in garage: {totalCars}</p>
@@ -105,7 +149,11 @@ const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
         </button>
       </div>
 
-      <SingleCar carsData={carsData} deleteCar={deleteCar} />
+      <SingleCar
+        carsData={carsData}
+        deleteCar={deleteCar}
+        changeCar={changeCar}
+      />
 
       <Page
         pageNumber={pageNumber}
