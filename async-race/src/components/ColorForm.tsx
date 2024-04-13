@@ -46,13 +46,10 @@ const ColorForm: React.FC<ColorFormProps> = ({
     } else {
       setError(true);
     }
-    // Reset form fields and state
     setCarName("");
     setCarColor("#FFFFFF");
     setCarID(-1);
-    if (setCarObj !== undefined) {
-      setCarObj({ name: "", id: -1, color: "#FFFFFF" });
-    }
+    setCarObj?.({ name: "", id: -1, color: "#FFFFFF" });
   };
 
   useEffect(() => {

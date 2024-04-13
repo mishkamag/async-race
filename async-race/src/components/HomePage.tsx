@@ -19,35 +19,37 @@ const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
   //get all cars
   const getCars = (page: number) => {
     fetch(`http://localhost:3000/garage?_page=${page}&_limit=7`)
-      .then<CarInterface[]>((response) => {
-        if (response.headers.get("X-Total-Count") !== null) {
-          setTotalCars(Number(response.headers.get("X-Total-Count")));
-          if (
-            Math.ceil(Number(response.headers.get("X-Total-Count")) / 7) !== 0
-          ) {
-            setTotalPages(
-              Math.ceil(Number(response.headers.get("X-Total-Count")) / 7)
-            );
-          }
+      .then((response) => {
+        if (response.ok) {
+          const totalCount = Number(response.headers.get("X-Total-Count"));
+          setTotalCars(totalCount);
+          setTotalPages(Math.ceil(totalCount / 7));
+          return response.json();
+        } else {
+          throw new Error("Failed to fetch cars data");
         }
-        return response.json();
       })
       .then((data) => {
-        if (data.length === 0) {
-          changePage(false);
-        }
         setCarsData(data);
       })
       .catch((error) => {
-        throw new Error(error);
+        console.error("Error fetching cars data:", error);
       });
   };
+
   //add car
   const addCar = (obj: { name: string; color: string }) => {
+    const newCar: CarInterface = {
+      name: obj.name,
+      color: obj.color,
+      id: Date.now(),
+    };
+    setCarsData([...carsData, newCar]);
+
     fetch("http://localhost:3000/garage", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(obj),
+      body: JSON.stringify(newCar),
     })
       .then((response) => {
         if (!response.ok) {
@@ -55,8 +57,8 @@ const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
         }
         return response.json();
       })
-      .then((newCar) => {
-        setCarsData((prevCarsData) => [...prevCarsData, newCar]);
+      .then(() => {
+        getCars(pageNumber);
       })
       .catch((error) => {
         console.error("Error adding car:", error);
