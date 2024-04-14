@@ -104,7 +104,8 @@
 .create-block {
   display: flex;
   gap: 10px;
-  padding: 10px;
+  margin: 20px auto;
+  max-width: 90%;
 }
 .create-block__error {
   color: red;

@@ -78,14 +78,17 @@ const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
 
   //create 100 cars random
   const create100Cars = () => {
+    let promise = Promise.resolve();
     for (let i = 0; i < 100; i++) {
-      const arr = Object.entries(carNames);
-      const firstName = arr[Math.floor(Math.random() * arr.length)];
-      const secondName =
-        firstName[1][Math.floor(Math.random() * firstName[1].length)];
-      const name = `${firstName[0]} ${secondName}`;
-      const color = "#" + Math.random().toString(16).slice(3, 9);
-      addCar({ name, color });
+      promise = promise.then(() => {
+        const arr = Object.entries(carNames);
+        const firstName = arr[Math.floor(Math.random() * arr.length)];
+        const secondName =
+          firstName[1][Math.floor(Math.random() * firstName[1].length)];
+        const name = `${firstName[0]} ${secondName}`;
+        const color = "#" + Math.random().toString(16).slice(3, 9);
+        return addCar({ name, color });
+      });
     }
   };
 
