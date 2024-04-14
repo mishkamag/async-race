@@ -1,16 +1,56 @@
+import React, { useEffect } from "react";
 import "../App.css";
 import { CarImageProps } from "../utils/types";
 
-const CarImage = ({ color }: CarImageProps) => {
+const CarImage = ({
+  color,
+  animationTime,
+  engineBroke,
+  width,
+}: CarImageProps) => {
+  const refImage = React.createRef<HTMLDivElement>();
+  let startAnimo: number = 0;
+  let myreq: number;
+
+  function move(time: number) {
+    if (!startAnimo) {
+      startAnimo = time;
+    }
+    const progress = (time - startAnimo) / animationTime;
+    const translate = progress * (window.innerWidth * 0.82);
+    if (refImage.current !== null) {
+      refImage.current.style.transform = `translate(${translate}px) rotateY(180deg)`;
+    }
+    if (progress < 1) {
+      myreq = requestAnimationFrame(move);
+    }
+  }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    myreq = requestAnimationFrame(move);
+    if (engineBroke) {
+      cancelAnimationFrame(myreq);
+    }
+  }, [animationTime, engineBroke]);
+
   return (
     <div
       className="car"
       id="car"
+      ref={refImage}
       style={{
         fill: color,
+        width: `${width}px`,
+        transform:
+          animationTime === 0 ? "translate(0px) rotateY(180deg)" : undefined,
       }}
     >
       <svg
+        style={{
+          position: "absolute",
+          top: "15px",
+        }}
         xmlns="http://www.w3.org/2000/svg"
         fillRule="evenodd"
         clipRule="evenodd"

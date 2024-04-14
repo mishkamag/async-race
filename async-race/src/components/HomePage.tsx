@@ -9,6 +9,7 @@ const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
   const [carsData, setCarsData] = useState<CarInterface[]>([]);
   const [totalCars, setTotalCars] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [startRace, setStartRace] = useState<boolean>(false);
   const [carObj, setCarObj] = useState<CarInterface>({
     name: "",
     color: "#FFFFFF",
@@ -147,18 +148,30 @@ const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
 
       <div className="btns-block">
         <p className="garage-text">Cars in garage: {totalCars}</p>
-        <button className="app-button">Start race</button>
+        <button
+          onClick={() => setStartRace(true)}
+          className="btn"
+          disabled={startRace}
+        >
+          Start race
+        </button>
         <button className="app-button">Reset</button>
         <button onClick={create100Cars} className="app-button">
           Create 100 cars
         </button>
       </div>
 
-      <SingleCar
-        carsData={carsData}
-        deleteCar={deleteCar}
-        changeCar={changeCar}
-      />
+      {carsData.map((item) => (
+        <SingleCar
+          carData={item}
+          deleteCar={deleteCar}
+          changeCar={changeCar}
+          key={item.id}
+          getCars={getCars}
+          startRace={startRace}
+          pageNumber={pageNumber}
+        />
+      ))}
 
       <Page
         pageNumber={pageNumber}
