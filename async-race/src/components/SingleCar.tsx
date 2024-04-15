@@ -9,6 +9,7 @@ const SingleCar = ({
   deleteCar,
   changeCar,
   startRace,
+  createWinner,
 }: SingleCarProps) => {
   const [engineBroke, setEngineBroke] = useState<boolean>(false);
   const [animationTime, setAnimationTime] = useState<number>(0);
@@ -16,6 +17,7 @@ const SingleCar = ({
   const [driveMode, setDriveMode] = useState<boolean>(false);
   const [time, setTime] = useState<number>(0);
   let winnerTime = 0;
+  const startEngine = false;
 
   const StartEngine = async (status: string) => {
     if (status === "drive") {
@@ -38,6 +40,10 @@ const SingleCar = ({
     );
     if (response.status === 500) {
       setEngineBroke(true);
+      // Check if createWinner is defined before calling it
+      if (createWinner) {
+        createWinner(carData, winnerTime, false);
+      }
     }
     if (status === "started") {
       if (response.status === 200) {
@@ -45,6 +51,16 @@ const SingleCar = ({
         winnerTime = Math.floor(data.distance / data.velocity);
         setTime(winnerTime);
         setEngineStarted(true);
+      }
+    }
+    if (status === "drive") {
+      if (response.status === 200) {
+        if (startEngine) {
+          // Check if createWinner is defined before calling it
+          if (createWinner) {
+            createWinner(carData, winnerTime, true);
+          }
+        }
       }
     }
   };

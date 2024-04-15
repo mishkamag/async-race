@@ -120,3 +120,31 @@
   margin-inline: auto;
   align-items: center;
 }
+
+/* //winner */
+
+.winner-text {
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: 50%;
+  color: orangered;
+  font-size: 30px;
+  font-weight: bold;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.288);
+}
+.winners-item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 500px;
+  justify-content: space-between;
+  padding: 5px;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+.winners-item__text {
+  width: 80px;
+  text-align: center;
+}

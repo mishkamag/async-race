@@ -1,15 +1,30 @@
-import { CarInterface, HomePageInterface } from "../utils/interfaces";
+import {
+  CarInterface,
+  HomePageInterface,
+  WinnerDataInterface,
+  WinnerObjectInterface,
+} from "../utils/interfaces";
 import { carNames } from "../utils/utils";
 import ColorForm from "./ColorForm";
 import Page from "./Page";
 import SingleCar from "./SingleCar";
 import { useEffect, useRef, useState } from "react";
 
-const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
+const HomePage = ({
+  setPageNumber,
+  pageNumber,
+  changeWinners,
+  winners,
+}: HomePageInterface) => {
   const [carsData, setCarsData] = useState<CarInterface[]>([]);
   const [totalCars, setTotalCars] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [startRace, setStartRace] = useState<boolean>(false);
+  const [endRace, setEndRace] = useState<boolean>(false);
+  const [winnerData, setWinnerData] = useState<WinnerDataInterface>({
+    name: "",
+    time: 0,
+  });
   const [carObj, setCarObj] = useState<CarInterface>({
     name: "",
     color: "#FFFFFF",
@@ -75,6 +90,10 @@ const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
         }
       }
     );
+    const index = winners.findIndex((elem) => elem.id === id);
+    if (index !== -1) {
+      fetch(`http://localhost:3000/winners/${id}`, { method: "DELETE" });
+    }
   };
 
   //create 100 cars random
@@ -129,8 +148,31 @@ const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
     }
   };
 
+  //
+  let winnersArr: WinnerObjectInterface[] = [];
+  const createWinner = (obj: CarInterface, time: number, status: boolean) => {
+    winnersArr.push({ obj, time, status });
+    if (winnersArr.length === carsData.length) {
+      setEndRace(true);
+      const winner = winnersArr.find((elem) => elem.status === true);
+      if (winner) {
+        setWinnerData({ name: winner.obj.name, time: winner.time });
+        changeWinners(winner.obj.id, winner.time);
+        winnersArr = [];
+      }
+    }
+  };
+
+  //Reset
+  const stopRace = () => {
+    setStartRace(false);
+    setEndRace(false);
+    setWinnerData({ name: "", time: 0 });
+  };
+
   useEffect(() => {
     getCars(pageNumber);
+    stopRace();
     // eslint-disable-next-line
   }, [pageNumber]);
 
@@ -155,7 +197,9 @@ const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
         >
           Start race
         </button>
-        <button className="app-button">Reset</button>
+        <button onClick={stopRace} className="btn" disabled={!endRace}>
+          Reset
+        </button>
         <button onClick={create100Cars} className="app-button">
           Create 100 cars
         </button>
@@ -170,8 +214,15 @@ const HomePage = ({ setPageNumber, pageNumber }: HomePageInterface) => {
           getCars={getCars}
           startRace={startRace}
           pageNumber={pageNumber}
+          createWinner={createWinner}
         />
       ))}
+
+      {winnerData.name && (
+        <p className="winner-text">
+          Winner {winnerData.name} with time {winnerData.time / 1000}s
+        </p>
+      )}
 
       <Page
         pageNumber={pageNumber}
