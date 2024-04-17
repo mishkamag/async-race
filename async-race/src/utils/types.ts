@@ -1,5 +1,6 @@
-import { CarInterface } from "./interfaces";
+import { CarInterface, WinnersInterface } from "./interfaces";
 
+//For CarImage componenet
 export type CarImageProps = {
   color: string | undefined;
   animationTime: number;
@@ -8,19 +9,18 @@ export type CarImageProps = {
   startEngine: boolean;
 };
 
+//For ColorForm componenet
 export type ColorFormProps = {
-  actionText: string;
-  addCar?: (obj: { name: string; color: string }) => void;
-  propFuncCar?: (
+  propFunc: (
     obj: {
       name: string;
       color: string;
     },
     id?: number
-  ) => void | undefined;
+  ) => void;
+  changeObj?: CarInterface;
   setCarObj?: React.Dispatch<React.SetStateAction<CarInterface>>;
   save?: boolean;
-  carObj?: CarInterface;
 };
 
 export type SingleCarProps = {
@@ -33,8 +33,17 @@ export type SingleCarProps = {
   deleteCar: (id: number) => void;
 };
 
+//For Component
 export type PageProps = {
   pageNumber: number;
   totalPages: number;
   changePage: (bool: boolean) => void;
+};
+
+//For HomePage componenet
+export type HomePageInterface = {
+  setPageNumber: React.Dispatch<React.SetStateAction<number>>;
+  pageNumber: number;
+  changeWinners: (id: number, time: number) => void;
+  winners: WinnersInterface[];
 };

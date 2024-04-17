@@ -1,23 +1,31 @@
-import CarImage from "./CarImage";
-import "../App.css";
 import { useEffect, useState } from "react";
-import { SingleCarProps } from "../utils/types";
-import { StartEngineInterface } from "../utils/interfaces";
+import CarImage from "./CarImage";
+import { CarInterface, RaceInterface } from "../utils/interfaces";
+
+type Props = {
+  carData: CarInterface;
+  changeCar: (obj: CarInterface) => void;
+  getCars: (page: number) => void;
+  startRace: boolean;
+  pageNumber: number;
+  createWinner: (obj: CarInterface, time: number, status: boolean) => void;
+  deleteCar: (id: number) => void;
+};
 
 const SingleCar = ({
   carData,
-  deleteCar,
   changeCar,
   startRace,
   createWinner,
-}: SingleCarProps) => {
+  deleteCar,
+}: Props) => {
   const [engineBroke, setEngineBroke] = useState<boolean>(false);
   const [animationTime, setAnimationTime] = useState<number>(0);
   const [engineStarted, setEngineStarted] = useState<boolean>(false);
   const [driveMode, setDriveMode] = useState<boolean>(false);
   const [time, setTime] = useState<number>(0);
   let winnerTime = 0;
-  const startEngine = false;
+  let startEngine = false;
 
   const StartEngine = async (status: string) => {
     if (status === "drive") {
@@ -33,6 +41,7 @@ const SingleCar = ({
       setDriveMode(false);
       setAnimationTime(0);
       winnerTime = 0;
+      startEngine = false;
     }
     const response = await fetch(
       `http://localhost:3000/engine?id=${carData.id}&status=${status}`,
@@ -40,27 +49,20 @@ const SingleCar = ({
     );
     if (response.status === 500) {
       setEngineBroke(true);
-      // Check if createWinner is defined before calling it
-      if (createWinner) {
-        createWinner(carData, winnerTime, false);
-      }
+      createWinner(carData, winnerTime, false);
     }
     if (status === "started") {
       if (response.status === 200) {
-        const data: StartEngineInterface = await response.json();
+        const data: RaceInterface = await response.json();
         winnerTime = Math.floor(data.distance / data.velocity);
         setTime(winnerTime);
         setEngineStarted(true);
+        startEngine = true;
       }
     }
     if (status === "drive") {
       if (response.status === 200) {
-        if (startEngine) {
-          // Check if createWinner is defined before calling it
-          if (createWinner) {
-            createWinner(carData, winnerTime, true);
-          }
-        }
+        if (startEngine) createWinner(carData, winnerTime, true);
       }
     }
   };
@@ -76,6 +78,7 @@ const SingleCar = ({
     } else StartEngine("stopped");
     // eslint-disable-next-line
   }, [startRace]);
+
   return (
     <div className="car-component">
       <div className="car-component__image-block">

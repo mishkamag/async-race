@@ -1,11 +1,11 @@
-import "./App.css";
-import { Routes, Route, useNavigate } from "react-router-dom";
-import HomePage from "./components/HomePage";
-import WinnerPage from "./components/WinnerPage";
 import { useEffect, useState } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import "./App.css";
+import HomePage from "./components/HomePage";
+import WinnersPage from "./components/WinnerPage";
 import { WinnersInterface } from "./utils/interfaces";
 
-const App = () => {
+function App() {
   const navigate = useNavigate();
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [winners, setWinners] = useState<WinnersInterface[]>([]);
@@ -68,16 +68,12 @@ const App = () => {
       })
       .then((data) => {
         setWinners(data);
-      })
-      .catch((error) => {
-        throw error;
       });
   };
 
   useEffect(() => {
     getWinners();
   }, []);
-
   return (
     <>
       <header className="app-container">
@@ -93,7 +89,6 @@ const App = () => {
           </ul>
         </div>
       </header>
-
       <Routes>
         <Route
           path="/"
@@ -109,7 +104,7 @@ const App = () => {
         <Route
           path="/winners"
           element={
-            <WinnerPage
+            <WinnersPage
               getWinners={getWinners}
               winners={winners}
               winPage={winPage}
@@ -123,6 +118,6 @@ const App = () => {
       </Routes>
     </>
   );
-};
+}
 
 export default App;

@@ -4,26 +4,16 @@ export interface CarInterface {
   color: string;
 }
 
-export interface HomePageInterface {
-  setPageNumber: React.Dispatch<React.SetStateAction<number>>;
-  pageNumber: number;
-  changeWinners: (id: number, time: number) => void;
-  winners: WinnersInterface[];
-}
-
 export interface StartEngineInterface {
   velocity: number;
   distance: number;
 }
 
-type SortingDirection = "ASC" | "DESC";
+//winners page
 
-export interface WinnerInterface {
-  getWinners: (
-    page: number,
-    sortBy: string,
-    sortOrder: SortingDirection
-  ) => void;
+export interface WinnerPageInterface {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  getWinners: Function;
   winners: WinnersInterface[];
   winPage: [number, React.Dispatch<React.SetStateAction<number>>];
   sortBy: [
@@ -58,4 +48,9 @@ export interface WinnerObjectInterface {
   obj: CarInterface;
   time: number;
   status: boolean;
+}
+
+export interface RaceInterface {
+  velocity: number;
+  distance: number;
 }

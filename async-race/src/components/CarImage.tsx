@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import "../App.css";
 import { CarImageProps } from "../utils/types";
 
 const CarImage = ({

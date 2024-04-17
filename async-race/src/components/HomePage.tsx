@@ -1,14 +1,15 @@
+import { useEffect, useRef, useState } from "react";
+import ColorForm from "./ColorForm";
+import SingleCar from "./SingleCar";
+import Page from "./Page";
+import Modal from "./Modal";
+import { carNames } from "../utils/utils";
 import {
   CarInterface,
-  HomePageInterface,
   WinnerDataInterface,
   WinnerObjectInterface,
 } from "../utils/interfaces";
-import { carNames } from "../utils/utils";
-import ColorForm from "./ColorForm";
-import Page from "./Page";
-import SingleCar from "./SingleCar";
-import { useEffect, useRef, useState } from "react";
+import { HomePageInterface } from "../utils/types";
 
 const HomePage = ({
   setPageNumber,
@@ -16,72 +17,66 @@ const HomePage = ({
   changeWinners,
   winners,
 }: HomePageInterface) => {
-  const [carsData, setCarsData] = useState<CarInterface[]>([]);
-  const [totalCars, setTotalCars] = useState<number>(0);
-  const [totalPages, setTotalPages] = useState<number>(1);
-  const [startRace, setStartRace] = useState<boolean>(false);
-  const [endRace, setEndRace] = useState<boolean>(false);
-  const [winnerData, setWinnerData] = useState<WinnerDataInterface>({
-    name: "",
-    time: 0,
-  });
+  const [carsArr, setCarsArr] = useState<CarInterface[]>([]);
   const [carObj, setCarObj] = useState<CarInterface>({
     name: "",
     color: "#FFFFFF",
     id: -1,
   });
+  const [serverError, setServerError] = useState<boolean>(false);
+  const [totalCars, setTotalCars] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [startRace, setStartRace] = useState<boolean>(false);
+  const [winnerData, setWinnerData] = useState<WinnerDataInterface>({
+    name: "",
+    time: 0,
+  });
+  const [endRace, setEndRace] = useState<boolean>(false);
   const save = useRef(false);
 
-  //get all cars
+  // GET all cars
   const getCars = (page: number) => {
     fetch(`http://localhost:3000/garage?_page=${page}&_limit=7`)
-      .then((response) => {
-        if (response.ok) {
-          const totalCount = Number(response.headers.get("X-Total-Count"));
-          setTotalCars(totalCount);
-          setTotalPages(Math.ceil(totalCount / 7));
-          return response.json();
-        } else {
-          throw new Error("Failed to fetch cars data");
-        }
-      })
-      .then((data) => {
-        setCarsData(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching cars data:", error);
-      });
-  };
-
-  //add car
-  const addCar = (obj: { name: string; color: string }) => {
-    const newCar: CarInterface = {
-      name: obj.name,
-      color: obj.color,
-      id: Date.now(),
-    };
-    setCarsData([...carsData, newCar]);
-
-    fetch("http://localhost:3000/garage", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newCar),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to add car");
+      .then<CarInterface[]>((response) => {
+        setServerError(false);
+        if (response.headers.get("X-Total-Count") !== null) {
+          setTotalCars(Number(response.headers.get("X-Total-Count")));
+          if (
+            Math.ceil(Number(response.headers.get("X-Total-Count")) / 7) !== 0
+          ) {
+            setTotalPages(
+              Math.ceil(Number(response.headers.get("X-Total-Count")) / 7)
+            );
+          }
         }
         return response.json();
       })
-      .then(() => {
-        getCars(pageNumber);
+      .then((data) => {
+        if (data.length === 0) {
+          changePage(false);
+        }
+        setCarsArr(data);
       })
       .catch((error) => {
-        console.error("Error adding car:", error);
+        setServerError(true);
+        throw new Error(error);
       });
   };
 
-  //delete car
+  // ADD car
+  const addCar = (obj: { name: string; color: string }) => {
+    fetch("http://localhost:3000/garage", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(obj),
+    })
+      .then<CarInterface>((response) => response.json())
+      .then(() => {
+        getCars(pageNumber);
+      });
+  };
+
+  //Delete car
   const deleteCar = (id: number) => {
     fetch(`http://localhost:3000/garage/${id}`, { method: "DELETE" }).then(
       (response) => {
@@ -96,7 +91,7 @@ const HomePage = ({
     }
   };
 
-  //create 100 cars random
+  //Create 100 cars random
   const create100Cars = () => {
     let promise = Promise.resolve();
     for (let i = 0; i < 100; i++) {
@@ -112,30 +107,11 @@ const HomePage = ({
     }
   };
 
-  //change car
+  //Change car
   const changeCar = (obj: CarInterface) => {
-    localStorage.removeItem("changeInpLoginovskiy");
+    localStorage.removeItem("changedCar");
     setCarObj(obj);
     save.current = true;
-  };
-
-  // fetch change cars
-  const fetchChangedCar = (
-    obj: { name: string; color: string },
-    id: number | undefined
-  ) => {
-    fetch(`http://localhost:3000/garage/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(obj),
-    })
-      .then<CarInterface>((response) => response.json())
-      .then((data) => {
-        const arr = [...carsData];
-        const index = arr.findIndex((car) => car.id === data.id);
-        arr.splice(index, 1, data);
-        setCarsData(arr);
-      });
   };
 
   //pagination
@@ -148,11 +124,29 @@ const HomePage = ({
     }
   };
 
-  //
+  //Fetched change cars
+  const fetchChangedCar = (
+    obj: { name: string; color: string },
+    id: number | undefined
+  ) => {
+    fetch(`http://localhost:3000/garage/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(obj),
+    })
+      .then<CarInterface>((response) => response.json())
+      .then((data) => {
+        const arr = [...carsArr];
+        const index = arr.findIndex((car) => car.id === data.id);
+        arr.splice(index, 1, data);
+        setCarsArr(arr);
+      });
+  };
+
   let winnersArr: WinnerObjectInterface[] = [];
   const createWinner = (obj: CarInterface, time: number, status: boolean) => {
     winnersArr.push({ obj, time, status });
-    if (winnersArr.length === carsData.length) {
+    if (winnersArr.length === carsArr.length) {
       setEndRace(true);
       const winner = winnersArr.find((elem) => elem.status === true);
       if (winner) {
@@ -163,7 +157,7 @@ const HomePage = ({
     }
   };
 
-  //Reset
+  //Reset race
   const stopRace = () => {
     setStartRace(false);
     setEndRace(false);
@@ -178,16 +172,13 @@ const HomePage = ({
 
   return (
     <div>
-      <ColorForm actionText="Create Car" propFuncCar={addCar} />
-
+      <ColorForm propFunc={addCar} />
       <ColorForm
-        actionText="Change Car"
-        carObj={carObj}
+        propFunc={fetchChangedCar}
+        changeObj={carObj}
         setCarObj={setCarObj}
         save={save.current}
-        propFuncCar={fetchChangedCar}
       />
-
       <div className="btns-block">
         <p className="garage-text">Cars in garage: {totalCars}</p>
         <button
@@ -200,24 +191,24 @@ const HomePage = ({
         <button onClick={stopRace} className="btn" disabled={!endRace}>
           Reset
         </button>
-        <button onClick={create100Cars} className="app-button">
+        <button onClick={create100Cars} className="btn">
           Create 100 cars
         </button>
       </div>
-
-      {carsData.map((item) => (
+      {carsArr.map((item) => (
         <SingleCar
           carData={item}
-          deleteCar={deleteCar}
           changeCar={changeCar}
-          key={item.id}
+          deleteCar={deleteCar}
           getCars={getCars}
           startRace={startRace}
           pageNumber={pageNumber}
           createWinner={createWinner}
+          key={item.id}
         />
       ))}
 
+      {/* Winner modal */}
       {winnerData.name && (
         <p className="winner-text">
           Winner {winnerData.name} with time {winnerData.time / 1000}s
@@ -229,6 +220,7 @@ const HomePage = ({
         totalPages={totalPages}
         changePage={changePage}
       />
+      {serverError && <Modal />}
     </div>
   );
 };

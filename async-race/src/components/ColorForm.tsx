@@ -1,22 +1,19 @@
-import React, { useEffect, useRef, useState } from "react";
-import "../App.css";
+import { useEffect, useRef, useState } from "react";
 import { ColorFormProps } from "../utils/types";
 
-const ColorForm: React.FC<ColorFormProps> = ({
-  actionText,
-  propFuncCar,
-  carObj,
-  save,
+const ColorForm = ({
+  propFunc,
+  changeObj,
   setCarObj,
-}) => {
+  save,
+}: ColorFormProps) => {
   const [carName, setCarName] = useState<string>("");
-  const [carColor, setCarColor] = useState<string>("#FFFFFF");
+  const [carColor, setCarColor] = useState<string>("#000000");
   const [carId, setCarID] = useState<number>(-1);
   const [error, setError] = useState<boolean>(false);
-  const color = useRef("#FFFFFF");
+  const color = useRef("#000000");
   const name = useRef("");
   const id = useRef(-1);
-  console.log(carName);
 
   const saveCarToLocalStorage = () => {
     const obj = {
@@ -24,7 +21,7 @@ const ColorForm: React.FC<ColorFormProps> = ({
       carName: name.current,
       carId: id.current,
     };
-    if (carObj !== undefined) {
+    if (changeObj !== undefined) {
       localStorage.setItem("changedCar", JSON.stringify(obj));
     } else {
       localStorage.setItem("createdCar", JSON.stringify(obj));
@@ -32,7 +29,7 @@ const ColorForm: React.FC<ColorFormProps> = ({
   };
 
   const deleteFromLocalStorage = () => {
-    if (carObj !== undefined) {
+    if (changeObj !== undefined) {
       localStorage.removeItem("changedCar");
     } else {
       localStorage.removeItem("createdCar");
@@ -41,7 +38,7 @@ const ColorForm: React.FC<ColorFormProps> = ({
 
   const handleCarSubmission = () => {
     if (carName !== "") {
-      propFuncCar?.({ name: carName, color: carColor }, carId);
+      propFunc?.({ name: carName, color: carColor }, carId);
       setError(false);
     } else {
       setError(true);
@@ -53,13 +50,13 @@ const ColorForm: React.FC<ColorFormProps> = ({
   };
 
   useEffect(() => {
-    if (carObj !== undefined) {
-      setCarName(carObj.name);
-      setCarColor(carObj.color);
-      setCarID(carObj.id);
-      id.current = carObj.id;
-      name.current = carObj.name;
-      color.current = carObj.color;
+    if (changeObj !== undefined) {
+      setCarName(changeObj.name);
+      setCarColor(changeObj.color);
+      setCarID(changeObj.id);
+      id.current = changeObj.id;
+      name.current = changeObj.name;
+      color.current = changeObj.color;
       if (localStorage.getItem("changedCar")) {
         const data = JSON.parse(localStorage.getItem("changedCar") as string);
         setCarColor(data.carColor);
@@ -73,7 +70,7 @@ const ColorForm: React.FC<ColorFormProps> = ({
       }
     }
     // eslint-disable-next-line
-  }, [carObj]);
+  }, [changeObj]);
 
   useEffect(() => {
     if (save) {
@@ -87,7 +84,7 @@ const ColorForm: React.FC<ColorFormProps> = ({
       <input
         type="text"
         className="create-block__input"
-        placeholder={actionText}
+        placeholder={changeObj ? "Change Car" : "Car Name"}
         value={carName}
         onChange={(e) => {
           setCarName(e.target.value);
@@ -112,8 +109,8 @@ const ColorForm: React.FC<ColorFormProps> = ({
         type="button"
         className="btn"
         disabled={
-          carObj !== undefined
-            ? carName !== "" && carObj.id !== -1
+          changeObj !== undefined
+            ? carName !== "" && changeObj.id !== -1
               ? false
               : true
             : false
@@ -123,7 +120,7 @@ const ColorForm: React.FC<ColorFormProps> = ({
           deleteFromLocalStorage();
         }}
       >
-        {carObj ? "Change" : "Create"}
+        {changeObj ? "Change" : "Create"}
       </button>
     </form>
   );

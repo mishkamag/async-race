@@ -1,13 +1,11 @@
 import { useEffect } from "react";
-import "../App.css";
-import Page from "./Page";
-import { CarInterface, WinnerInterface } from "../utils/interfaces";
+
 import CarImage from "./CarImage";
+import Page from "./Page";
+import { CarInterface, WinnerPageInterface } from "../utils/interfaces";
 
 let allCars: CarInterface[] = [];
-export type SortingDirection = "ASC" | "DESC";
-
-export default function WinnerPage({
+export default function WinnersPage({
   getWinners,
   winners,
   winPage,
@@ -15,7 +13,7 @@ export default function WinnerPage({
   sortOrder,
   totalCars,
   totalPages,
-}: WinnerInterface) {
+}: WinnerPageInterface) {
   const changePage = (bool: boolean) => {
     if (bool && totalPages > winPage[0]) {
       winPage[1]((winPage[0] += 1));
@@ -56,11 +54,9 @@ export default function WinnerPage({
 
   useEffect(() => {
     getGarage();
-  }, []);
-
-  useEffect(() => {
-    getWinners(winPage[0], sortBy[0].name, sortBy[0].sort as SortingDirection);
-  }, [getWinners, sortBy, winPage]);
+    getWinners(winPage[0], sortBy[0].name, sortBy[0].sort);
+    // eslint-disable-next-line
+  }, [sortBy[0], winPage[0]]);
 
   return (
     <div className="winner-page">
