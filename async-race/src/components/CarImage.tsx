@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { CarImageProps } from "../utils/types";
+import { useLocation } from "react-router-dom";
 
 const CarImage = ({
   color,
@@ -7,6 +8,8 @@ const CarImage = ({
   engineBroke,
   width,
 }: CarImageProps) => {
+  const location = useLocation();
+
   const refImage = React.createRef<HTMLDivElement>();
   let startAnimo: number = 0;
   let myreq: number;
@@ -33,9 +36,12 @@ const CarImage = ({
     }
   }, [animationTime, engineBroke]);
 
+  const inWinnersPage = location.pathname === "/winners";
+  const carClassName = inWinnersPage ? "car-winners-page" : "car";
+
   return (
     <div
-      className="car"
+      className={carClassName}
       id="car"
       ref={refImage}
       style={{

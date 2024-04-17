@@ -59,65 +59,58 @@ export default function WinnersPage({
   }, [sortBy[0], winPage[0]]);
 
   return (
-    <div className="winner-page">
-      <p>Total winners : {totalCars}</p>
-      <div className="winners-item">
-        <p
-          className="winners-item__text clicked"
-          onClick={() => sortingFn("id")}
-        >
-          ID{" "}
-          {sortOrder[0] && sortBy[0].name === "id" ? (
-            <span>&#8659;</span>
-          ) : (
-            <span>&#8657;</span>
-          )}
-        </p>
-        <p className="winners-item__text">Name</p>
-        <p className="winners-item__text">Car</p>
-        <p
-          className="winners-item__text clicked"
-          onClick={() => sortingFn("wins")}
-        >
-          Wins{" "}
-          {sortOrder[0] && sortBy[0].name === "wins" ? (
-            <span>&#8659;</span>
-          ) : (
-            <span>&#8657;</span>
-          )}
-        </p>
-        <p
-          className="winners-item__text clicked"
-          onClick={() => sortingFn("time")}
-        >
-          BestTime{" "}
-          {sortOrder[0] && sortBy[0].name === "time" ? (
-            <span>&#8659;</span>
-          ) : (
-            <span>&#8657;</span>
-          )}
-        </p>
-      </div>
-      {mixedArr.map((item) => (
-        <div key={item.id} className="winners-item">
-          <p className="winners-item__text">{item.id}</p>
-          <p className="winners-item__text">{item.name}</p>
-          <CarImage
-            color={item.color}
-            animationTime={0}
-            engineBroke={false}
-            startEngine={false}
-            width={60}
-          />
-          <p className="winners-item__text">{item.wins}</p>
-          <p className="winners-item__text">{item.time}</p>
-        </div>
-      ))}
+    <section className="winners-page">
+      <h1 className="winners-page__total">Total winners : {totalCars}</h1>
       <Page
         pageNumber={winPage[0]}
         totalPages={totalPages}
         changePage={changePage}
       />
-    </div>
+      <div className="winners-page__table">
+        <div className="winners-page__row winners-page__header">
+          <p className="winners-page__cell" onClick={() => sortingFn("id")}>
+            ID{" "}
+            {sortOrder[0] && sortBy[0].name === "id" ? (
+              <span>&#8659;</span>
+            ) : (
+              <span>&#8657;</span>
+            )}
+          </p>
+          <p className="winners-page__cell">Name</p>
+          <p className="winners-page__cell">Car</p>
+          <p className="winners-page__cell" onClick={() => sortingFn("wins")}>
+            Wins{" "}
+            {sortOrder[0] && sortBy[0].name === "wins" ? (
+              <span>&#8659;</span>
+            ) : (
+              <span>&#8657;</span>
+            )}
+          </p>
+          <p className="winners-page__cell" onClick={() => sortingFn("time")}>
+            BestTime{" "}
+            {sortOrder[0] && sortBy[0].name === "time" ? (
+              <span>&#8659;</span>
+            ) : (
+              <span>&#8657;</span>
+            )}
+          </p>
+        </div>
+        {mixedArr.map((item) => (
+          <div key={item.id} className="winners-page__row">
+            <p className="winners-page__cell">{item.id}</p>
+            <p className="winners-page__cell">{item.name}</p>
+            <CarImage
+              color={item.color}
+              animationTime={0}
+              engineBroke={false}
+              startEngine={false}
+              width={60}
+            />
+            <p className="winners-page__cell">{item.wins}</p>
+            <p className="winners-page__cell">{item.time}</p>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }

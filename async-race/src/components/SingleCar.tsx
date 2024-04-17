@@ -80,7 +80,7 @@ const SingleCar = ({
   }, [startRace]);
 
   return (
-    <div className="car-component">
+    <section className="car-component">
       <div className="car-component__image-block">
         <CarImage
           color={carData.color}
@@ -93,40 +93,47 @@ const SingleCar = ({
           src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhmWLe1i-nydIEDVwuWdNakukQ0h2R_W9ALlTDU4zHxBVkc-U-8fG-3RnlOowilBobV94OTOIGOc8dJCqEBOeSAvyR1G8Pri0-2JNpsxYaXBs3CwmTp9UTsPLBgm8m0R7fyWzPP658-etY/s0/crossed_two_checkered_flags.gif"
           alt="flag"
           width="90"
-          className="image-block__flag"
+          className="car-component__image-block-flag"
         />
       </div>
-      <p>{carData.name}</p>
-      <div className="btns-block">
+      <div className="home-page__button-block">
+        <p className="car-component__image-car">{carData.name}</p>
+
         <button
           onClick={() => StartEngine("started")}
-          className="btn"
+          className="home-page__action-button"
           disabled={engineStarted}
         >
           Start
         </button>
         <button
           onClick={() => StartEngine("drive")}
-          className="btn"
+          className="home-page__action-button"
           disabled={driveMode || !engineStarted}
         >
           Drive
         </button>
         <button
           onClick={() => StartEngine("stopped")}
-          className="btn"
+          className="home-page__action-button"
           disabled={!engineStarted}
         >
           Stop
         </button>
-        <button onClick={() => changeCar(carData)} className="btn">
+        <button
+          onClick={() => changeCar(carData)}
+          className="home-page__action-button"
+        >
           Change
         </button>
-        <button onClick={() => deleteCar(carData.id)} className="btn">
+        <button
+          onClick={() => deleteCar(carData.id)}
+          className="home-page__action-button"
+        >
           Delete
         </button>
       </div>
-    </div>
+    </section>
   );
 };
 

@@ -20,7 +20,7 @@ const HomePage = ({
   const [carsArr, setCarsArr] = useState<CarInterface[]>([]);
   const [carObj, setCarObj] = useState<CarInterface>({
     name: "",
-    color: "#FFFFFF",
+    color: "",
     id: -1,
   });
   const [serverError, setServerError] = useState<boolean>(false);
@@ -171,7 +171,7 @@ const HomePage = ({
   }, [pageNumber]);
 
   return (
-    <div>
+    <main className="home-page">
       <ColorForm propFunc={addCar} />
       <ColorForm
         propFunc={fetchChangedCar}
@@ -179,22 +179,34 @@ const HomePage = ({
         setCarObj={setCarObj}
         save={save.current}
       />
-      <div className="btns-block">
-        <p className="garage-text">Cars in garage: {totalCars}</p>
+
+      <div className="home-page__button-block">
+        <p className="home-page__garage-info">
+          Cars in garage: <span>{totalCars}</span>{" "}
+        </p>
         <button
           onClick={() => setStartRace(true)}
-          className="btn"
+          className="home-page__action-button"
           disabled={startRace}
         >
           Start race
         </button>
-        <button onClick={stopRace} className="btn" disabled={!endRace}>
+        <button
+          onClick={stopRace}
+          className="home-page__action-button"
+          disabled={!endRace}
+        >
           Reset
         </button>
-        <button onClick={create100Cars} className="btn">
+        <button onClick={create100Cars} className="home-page__action-button">
           Create 100 cars
         </button>
       </div>
+      <Page
+        pageNumber={pageNumber}
+        totalPages={totalPages}
+        changePage={changePage}
+      />
       {carsArr.map((item) => (
         <SingleCar
           carData={item}
@@ -210,18 +222,13 @@ const HomePage = ({
 
       {/* Winner modal */}
       {winnerData.name && (
-        <p className="winner-text">
+        <p className="home-page__winner-info">
           Winner {winnerData.name} with time {winnerData.time / 1000}s
         </p>
       )}
 
-      <Page
-        pageNumber={pageNumber}
-        totalPages={totalPages}
-        changePage={changePage}
-      />
       {serverError && <Modal />}
-    </div>
+    </main>
   );
 };
 

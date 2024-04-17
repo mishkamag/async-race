@@ -2,17 +2,25 @@ import { PageProps } from "../utils/types";
 
 const Page = ({ pageNumber, totalPages, changePage }: PageProps) => {
   return (
-    <div className="page-block">
-      <button className="btn" onClick={() => changePage(false)}>
-        {pageNumber > 1 ? <p>prev</p> : ""}
+    <section className="page-block">
+      <button className="page-block__btn" onClick={() => changePage(false)}>
+        {pageNumber > 1 ? (
+          <span className="page-block__btn-arrow">&larr;</span>
+        ) : (
+          ""
+        )}
       </button>
-      <p className="garage-text">
-        Page {pageNumber} / {totalPages}
+      <p className="page-block__garage-text">
+        Pages {pageNumber} / {totalPages}
       </p>
-      <button className="btn" onClick={() => changePage(true)}>
-        {pageNumber >= totalPages ? "" : <p>next</p>}
+      <button className="page-block__btn" onClick={() => changePage(true)}>
+        {pageNumber >= totalPages ? (
+          ""
+        ) : (
+          <span className="page-block__btn-arrow">&rarr;</span>
+        )}
       </button>
-    </div>
+    </section>
   );
 };
 

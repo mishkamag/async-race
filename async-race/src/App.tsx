@@ -76,14 +76,14 @@ function App() {
   }, []);
   return (
     <>
-      <header className="app-container">
-        <div className="app-header">
-          <h2 className="app-title">Fast & Furious</h2>
-          <ul className="app-buttons">
-            <li className="app-button" onClick={() => navigate("/")}>
+      <header className="header-container">
+        <div className="header-content">
+          <h2 className="header-title">Fast & Furious</h2>
+          <ul className="header-buttons">
+            <li className="header-button" onClick={() => navigate("/")}>
               Garage
             </li>
-            <li className="app-button" onClick={() => navigate("/winners")}>
+            <li className="header-button" onClick={() => navigate("/winners")}>
               Winners
             </li>
           </ul>

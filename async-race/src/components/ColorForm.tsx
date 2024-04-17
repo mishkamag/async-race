@@ -80,34 +80,38 @@ const ColorForm = ({
   }, [save]);
 
   return (
-    <form className="create-block">
-      <input
-        type="text"
-        className="create-block__input"
-        placeholder={changeObj ? "Change Car" : "Car Name"}
-        value={carName}
-        onChange={(e) => {
-          setCarName(e.target.value);
-          setError(false);
-          name.current = e.target.value;
-          saveCarToLocalStorage();
-        }}
-        style={{ boxShadow: error ? "0 0 5px 5px red" : undefined }}
-      />
-      {error && <p className="create-block__error">!</p>}
-      <input
-        type="color"
-        className="create-block__input"
-        value={carColor}
-        onChange={(e) => {
-          setCarColor(e.target.value);
-          color.current = e.target.value;
-          saveCarToLocalStorage();
-        }}
-      />
+    <form className="color-form">
+      <div>
+        <input
+          type="text"
+          className="color-form__input"
+          placeholder={changeObj ? "Change Car" : "Car Name"}
+          value={carName}
+          onChange={(e) => {
+            setCarName(e.target.value);
+            setError(false);
+            name.current = e.target.value;
+            saveCarToLocalStorage();
+          }}
+          style={{ boxShadow: error ? "0 0 5px 5px red" : undefined }}
+        />
+        {error && <p className="color-form__error">Enter Car Name</p>}
+      </div>
+      <div>
+        <input
+          type="color"
+          className="color-form__color"
+          value={carColor}
+          onChange={(e) => {
+            setCarColor(e.target.value);
+            color.current = e.target.value;
+            saveCarToLocalStorage();
+          }}
+        />
+      </div>
       <button
         type="button"
-        className="btn"
+        className="color-form__button"
         disabled={
           changeObj !== undefined
             ? carName !== "" && changeObj.id !== -1
