@@ -4,6 +4,7 @@ import "./App.css";
 import HomePage from "./components/HomePage";
 import WinnersPage from "./components/WinnerPage";
 import { WinnersInterface } from "./utils/interfaces";
+import useHttp from "./utils/useHttp";
 
 function App() {
   const navigate = useNavigate();
@@ -18,6 +19,8 @@ function App() {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [totalCars, setTotalCars] = useState<number>(0);
 
+  const { sendRequest } = useHttp();
+
   const changeWinners = (id: number, time: number) => {
     const ifWinner = winners.find((elem) => elem.id === id);
     if (ifWinner) {
@@ -31,22 +34,30 @@ function App() {
     }
   };
 
-  const setWinner = (obj: WinnersInterface) => {
-    fetch("http://localhost:3000/winners", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(obj),
-    }).then<WinnersInterface>((response) => response.json());
+  //set winner
+  const setWinner = async (obj: WinnersInterface) => {
+    try {
+      await sendRequest("http://localhost:3000/winners", "POST", obj);
+    } catch (error) {
+      console.error("Error:", error);
+      throw error;
+    }
   };
 
-  const updateWinner = (obj: { wins: number; time: number }, id: number) => {
-    fetch(`http://localhost:3000/winners/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(obj),
-    });
+  //update winners
+  const updateWinner = async (
+    obj: { wins: number; time: number },
+    id: number,
+  ) => {
+    try {
+      await sendRequest(`http://localhost:3000/winners/${id}`, "PUT", obj);
+    } catch (error) {
+      console.error("Error:", error);
+      throw error;
+    }
   };
 
+  //get winners
   const getWinners = (page?: number, sort?: string, order?: string) => {
     let queryParams = "";
     if (page) {
@@ -60,7 +71,7 @@ function App() {
             Math.ceil(Number(response.headers.get("X-Total-Count")) / 10) !== 0
           ) {
             setTotalPages(
-              Math.ceil(Number(response.headers.get("X-Total-Count")) / 10)
+              Math.ceil(Number(response.headers.get("X-Total-Count")) / 10),
             );
           }
         }

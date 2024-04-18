@@ -10,6 +10,7 @@ import {
   WinnerObjectInterface,
 } from "../utils/interfaces";
 import { HomePageInterface } from "../utils/types";
+import useHttp from "../utils/useHttp"; // Import the custom hook
 
 const HomePage = ({
   setPageNumber,
@@ -34,61 +35,54 @@ const HomePage = ({
   const [endRace, setEndRace] = useState<boolean>(false);
   const save = useRef(false);
 
+  const { sendRequest: sendCarsRequest } = useHttp();
+
   // GET all cars
-  const getCars = (page: number) => {
-    fetch(`http://localhost:3000/garage?_page=${page}&_limit=7`)
-      .then<CarInterface[]>((response) => {
-        setServerError(false);
-        if (response.headers.get("X-Total-Count") !== null) {
-          setTotalCars(Number(response.headers.get("X-Total-Count")));
-          if (
-            Math.ceil(Number(response.headers.get("X-Total-Count")) / 7) !== 0
-          ) {
-            setTotalPages(
-              Math.ceil(Number(response.headers.get("X-Total-Count")) / 7)
-            );
-          }
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (data.length === 0) {
-          changePage(false);
-        }
-        setCarsArr(data);
-      })
-      .catch((error) => {
-        setServerError(true);
-        throw new Error(error);
-      });
-  };
-
-  // ADD car
-  const addCar = (obj: { name: string; color: string }) => {
-    fetch("http://localhost:3000/garage", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(obj),
-    })
-      .then<CarInterface>((response) => response.json())
-      .then(() => {
-        getCars(pageNumber);
-      });
-  };
-
-  //Delete car
-  const deleteCar = (id: number) => {
-    fetch(`http://localhost:3000/garage/${id}`, { method: "DELETE" }).then(
-      (response) => {
-        if (response.status === 200) {
-          getCars(pageNumber);
-        }
+  const getCars = async (page: number) => {
+    try {
+      const responseData = await sendCarsRequest(
+        `http://localhost:3000/garage?_page=${page}&_limit=7`,
+      );
+      if (responseData) {
+        setCarsArr(responseData);
+        setTotalCars(responseData.length);
+        setTotalPages(Math.ceil(responseData.length / 7));
       }
-    );
+    } catch (error) {
+      setServerError(true);
+    }
+  };
+
+  // Function to add a car
+  const addCar = async (obj: { name: string; color: string }) => {
+    await sendCarsRequest("http://localhost:3000/garage", "POST", obj);
+    getCars(pageNumber);
+  };
+
+  // Function to delete a car
+  const deleteCar = async (id: number) => {
+    await sendCarsRequest(`http://localhost:3000/garage/${id}`, "DELETE");
+    getCars(pageNumber);
     const index = winners.findIndex((elem) => elem.id === id);
     if (index !== -1) {
-      fetch(`http://localhost:3000/winners/${id}`, { method: "DELETE" });
+      await sendCarsRequest(`http://localhost:3000/winners/${id}`, "DELETE");
     }
+  };
+
+  // Function to fetch changed car
+  const fetchChangedCar = async (
+    obj: { name: string; color: string },
+    id: number | undefined,
+  ) => {
+    const responseData = await sendCarsRequest(
+      `http://localhost:3000/garage/${id}`,
+      "PUT",
+      obj,
+    );
+    const arr = [...carsArr];
+    const index = arr.findIndex((car) => car.id === responseData.id);
+    arr.splice(index, 1, responseData);
+    setCarsArr(arr);
   };
 
   //Create 100 cars random
@@ -124,25 +118,7 @@ const HomePage = ({
     }
   };
 
-  //Fetched change cars
-  const fetchChangedCar = (
-    obj: { name: string; color: string },
-    id: number | undefined
-  ) => {
-    fetch(`http://localhost:3000/garage/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(obj),
-    })
-      .then<CarInterface>((response) => response.json())
-      .then((data) => {
-        const arr = [...carsArr];
-        const index = arr.findIndex((car) => car.id === data.id);
-        arr.splice(index, 1, data);
-        setCarsArr(arr);
-      });
-  };
-
+  //create winner
   let winnersArr: WinnerObjectInterface[] = [];
   const createWinner = (obj: CarInterface, time: number, status: boolean) => {
     winnersArr.push({ obj, time, status });
