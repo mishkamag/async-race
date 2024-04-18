@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ColorFormProps } from "../utils/types";
 
 const ColorForm = ({

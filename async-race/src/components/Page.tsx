@@ -1,3 +1,4 @@
+import React from "react";
 import { PageProps } from "../utils/types";
 
 const Page = ({ pageNumber, totalPages, changePage }: PageProps) => {

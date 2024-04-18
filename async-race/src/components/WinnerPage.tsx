@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
 import CarImage from "./CarImage";
 import Page from "./Page";
