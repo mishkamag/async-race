@@ -1,5 +1,4 @@
 {
-  "homepage": "http://mishkamag.github.io/async-race",
   "name": "async-race",
   "private": true,
   "version": "0.0.0",
@@ -12,9 +11,7 @@
     "preview": "vite preview",
     "format": "prettier --write \"./src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "start": "webpack serve --config webpack/webpack.config.cjs --env env=dev --open",
-    "build": "webpack  --config webpack/webpack.config.cjs --env env=prod",
-    "predeploy": "npm run predeploy",
-    "deploy": "gh-pages -d build"
+    "build": "webpack  --config webpack/webpack.config.cjs --env env=prod"
   },
   "dependencies": {
     "eslint-config-airbnb-typescript": "^18.0.0",
@@ -41,7 +38,6 @@
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
-    "gh-pages": "^6.1.1",
     "globals": "^15.0.0",
     "html-webpack-plugin": "^5.6.0",
     "prettier": "^3.2.5",
