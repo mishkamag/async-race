@@ -10,7 +10,7 @@ import {
   WinnerObjectInterface,
 } from "../utils/interfaces";
 import { HomePageInterface } from "../utils/types";
-import useHttp from "../utils/useHttp"; // Import the custom hook
+import useHttp from "../utils/useHttp";
 
 const HomePage = ({
   setPageNumber,
@@ -24,7 +24,6 @@ const HomePage = ({
     color: "",
     id: -1,
   });
-  const [serverError, setServerError] = useState<boolean>(false);
   const [totalCars, setTotalCars] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [startRace, setStartRace] = useState<boolean>(false);
@@ -35,7 +34,7 @@ const HomePage = ({
   const [endRace, setEndRace] = useState<boolean>(false);
   const save = useRef(false);
 
-  const { sendRequest: sendCarsRequest } = useHttp();
+  const { sendRequest: sendCarsRequest, serverError } = useHttp();
 
   // GET all cars
   const getCars = async (page: number) => {
@@ -52,7 +51,7 @@ const HomePage = ({
         setTotalPages(Math.ceil(totalCarsResponse.length / 7));
       }
     } catch (error) {
-      setServerError(true);
+      console.log(error);
     }
   };
   // Function to add a car

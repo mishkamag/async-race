@@ -79,6 +79,9 @@ function App() {
       })
       .then((data) => {
         setWinners(data);
+      })
+      .catch((error: string) => {
+        console.log(error);
       });
   };
 

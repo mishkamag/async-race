@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+
 type Body = {
   name?: string;
   color?: string;
@@ -6,9 +8,9 @@ type Body = {
 };
 
 const useHttp = () => {
-  const sendRequest = async (url: string, method = "GET", body?: Body) => {
-    let responseData;
+  const [serverError, setServerError] = useState<boolean>(false);
 
+  const sendRequest = async (url: string, method = "GET", body?: Body) => {
     try {
       const response = await fetch(url, {
         method,
@@ -22,17 +24,19 @@ const useHttp = () => {
         throw new Error("Request failed!");
       }
 
-      responseData = await response.json();
+      const responseData = await response.json();
+      return responseData;
     } catch (error) {
-      // Handle the error
-      console.error("Error");
+      console.error("Error:", error);
+      setServerError(true);
+      throw error;
     }
-
-    return responseData;
   };
 
   return {
     sendRequest,
+    serverError,
+    setServerError,
   };
 };
 
