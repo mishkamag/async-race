@@ -47,7 +47,7 @@ function App() {
   //update winners
   const updateWinner = async (
     obj: { wins: number; time: number },
-    id: number,
+    id: number
   ) => {
     try {
       await sendRequest(`http://localhost:3000/winners/${id}`, "PUT", obj);
@@ -71,7 +71,7 @@ function App() {
             Math.ceil(Number(response.headers.get("X-Total-Count")) / 10) !== 0
           ) {
             setTotalPages(
-              Math.ceil(Number(response.headers.get("X-Total-Count")) / 10),
+              Math.ceil(Number(response.headers.get("X-Total-Count")) / 10)
             );
           }
         }

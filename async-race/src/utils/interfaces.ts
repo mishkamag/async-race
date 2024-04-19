@@ -26,7 +26,7 @@ export interface WinnerPageInterface {
         name: string;
         sort: string;
       }>
-    >
+    >,
   ];
   sortOrder: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
   totalCars: number;

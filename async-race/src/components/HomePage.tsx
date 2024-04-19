@@ -40,19 +40,21 @@ const HomePage = ({
   // GET all cars
   const getCars = async (page: number) => {
     try {
-      const responseData = await sendCarsRequest(
-        `http://localhost:3000/garage?_page=${page}&_limit=7`,
+      const response = await sendCarsRequest(
+        `http://localhost:3000/garage?_page=${page}&_limit=7`
       );
-      if (responseData) {
-        setCarsArr(responseData);
-        setTotalCars(responseData.length);
-        setTotalPages(Math.ceil(responseData.length / 7));
+      const totalCarsResponse = await sendCarsRequest(
+        `http://localhost:3000/garage`
+      );
+      if (response) {
+        setCarsArr(response);
+        setTotalCars(totalCarsResponse.length);
+        setTotalPages(Math.ceil(totalCarsResponse.length / 7));
       }
     } catch (error) {
       setServerError(true);
     }
   };
-
   // Function to add a car
   const addCar = async (obj: { name: string; color: string }) => {
     await sendCarsRequest("http://localhost:3000/garage", "POST", obj);
@@ -72,12 +74,12 @@ const HomePage = ({
   // Function to fetch changed car
   const fetchChangedCar = async (
     obj: { name: string; color: string },
-    id: number | undefined,
+    id: number | undefined
   ) => {
     const responseData = await sendCarsRequest(
       `http://localhost:3000/garage/${id}`,
       "PUT",
-      obj,
+      obj
     );
     const arr = [...carsArr];
     const index = arr.findIndex((car) => car.id === responseData.id);
@@ -87,17 +89,14 @@ const HomePage = ({
 
   //Create 100 cars random
   const create100Cars = () => {
-    let promise = Promise.resolve();
     for (let i = 0; i < 100; i++) {
-      promise = promise.then(() => {
-        const arr = Object.entries(carNames);
-        const firstName = arr[Math.floor(Math.random() * arr.length)];
-        const secondName =
-          firstName[1][Math.floor(Math.random() * firstName[1].length)];
-        const name = `${firstName[0]} ${secondName}`;
-        const color = "#" + Math.random().toString(16).slice(3, 9);
-        return addCar({ name, color });
-      });
+      const arr = Object.entries(carNames);
+      const firstName = arr[Math.floor(Math.random() * arr.length)];
+      const secondName =
+        firstName[1][Math.floor(Math.random() * firstName[1].length)];
+      const name = `${firstName[0]} ${secondName}`;
+      const color = "#" + Math.random().toString(16).slice(3, 9);
+      addCar({ name, color });
     }
   };
 
