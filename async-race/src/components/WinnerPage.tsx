@@ -58,6 +58,7 @@ export default function WinnersPage({
     // eslint-disable-next-line
   }, [sortBy[0], winPage[0]]);
 
+  console.log(winners);
   return (
     <section className="winners-page">
       <h1 className="winners-page__total">Total winners : {totalCars}</h1>
